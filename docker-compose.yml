@@ -1,5 +1,26 @@
+# AuditFlow — one command
+#
+#   docker compose up --build
+#
+# Serves API on :8000, writes workpaper to ./output
+# Uses SQLite by default (no Postgres required).
+# Optional Postgres: docker compose --profile postgres up --build
+
 services:
+  aflo:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: sqlite+aiosqlite:////app/data/aflo.db
+      APP_ENV: production
+      AFLO_RUN_DEMO: "1"
+    volumes:
+      - ./output:/app/output
+      - ./data:/app/data:ro
+
   db:
+    profiles: ["postgres"]
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: aflo
